@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "127580395532",
+    "project_id": "theflaggang-2a26b",
+    "storage_bucket": "theflaggang-2a26b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:127580395532:android:89cb279ce7c3fae1c27629",
+        "android_client_info": {
+          "package_name": "ca.ipsofactointeractif.theflaggangapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAEcugQJ4rf5Lfy0U1uCMvZG58wGoeBnYQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
