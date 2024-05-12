@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'dart:developer' as devtools show log;
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -30,7 +31,7 @@ class _LoginViewState extends State<LoginView> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text('Login'),
+        title: const Text('Sign in'),
       ),
       body: Column(
         children: [
@@ -55,25 +56,28 @@ class _LoginViewState extends State<LoginView> {
               final email = _email.text;
               final password = _password.text;
               try {
-                final userCredencial = await FirebaseAuth.instance
-                    .signInWithEmailAndPassword(
-                        email: email, password: password);
-                print(userCredencial.user);
+                await FirebaseAuth.instance.signInWithEmailAndPassword(
+                    email: email, password: password);
+
+                if (!context.mounted) return;
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                  '/notes/',
+                  (route) => false,
+                );
               } on FirebaseAuthException catch (e) {
                 switch (e.code) {
                   case 'user-not-found':
-                    print('No user found for that email.');
+                    devtools.log('No user found for that email.');
                     break;
                   case 'wrong-password':
-                    print('Wrong password provided for that user.');
+                    devtools.log('Wrong password provided for that user.');
                     break;
                   default:
-                    print('Error: ${e.code}');
+                    devtools.log('Error: ${e.code}');
                 }
-                print(e.code);
               }
             },
-            child: const Text('Login'),
+            child: const Text('Sign in'),
           ),
           TextButton(
               onPressed: () {
