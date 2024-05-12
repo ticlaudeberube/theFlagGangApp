@@ -1,11 +1,18 @@
+import 'package:theflaggangapp/firebase_options.dart';
 import 'package:theflaggangapp/services/auth/auth_user.dart';
 import 'package:theflaggangapp/services/auth/auth_provider.dart';
 import 'package:theflaggangapp/services/auth/auth_exceptions.dart';
 import 'package:firebase_auth/firebase_auth.dart'
     show FirebaseAuth, FirebaseAuthException;
+import 'package:firebase_core/firebase_core.dart';
 
 class FirebaseAuthProvider implements AuthProvider {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  @override
+  Future<void> initialize() async {
+    await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform);
+  }
 
   @override
   AuthUser? get currentUser {

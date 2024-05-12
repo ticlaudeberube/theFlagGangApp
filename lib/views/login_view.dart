@@ -1,7 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
 import 'package:theflaggangapp/constants/routes.dart';
+import 'package:theflaggangapp/services/auth/auth_exceptions.dart';
+import 'package:theflaggangapp/services/auth/auth_service.dart';
 import 'package:theflaggangapp/utilities/show_error_dialog.dart';
 
 class LoginView extends StatefulWidget {
@@ -58,11 +58,11 @@ class _LoginViewState extends State<LoginView> {
               final email = _email.text;
               final password = _password.text;
               try {
-                await FirebaseAuth.instance.signInWithEmailAndPassword(
-                    email: email, password: password);
+                await AuthService.firebase()
+                    .login(email: email, password: password);
 
-                final user = FirebaseAuth.instance.currentUser;
-                if (user?.emailVerified ?? false) {
+                final user = AuthService.firebase().currentUser;
+                if (user?.isEmailVerified ?? false) {
                   if (context.mounted) {
                     Navigator.of(context).pushNamedAndRemoveUntil(
                       notesRoute,
@@ -77,22 +77,17 @@ class _LoginViewState extends State<LoginView> {
                     );
                   }
                 }
-              } on FirebaseAuthException catch (e) {
+              } on UserNotFoundAuthException {
                 if (context.mounted) {
-                  switch (e.code) {
-                    case 'user-not-found':
-                      await showErrorDialog(context, 'No user found.');
-                      break;
-                    case 'wrong-password':
-                      await showErrorDialog(context, 'Wrong crecentials.');
-                      break;
-                    default:
-                      await showErrorDialog(context, 'Error: ${e.code}');
-                  }
+                  await showErrorDialog(context, 'No user found.');
                 }
-              } catch (e) {
+              } on WrongPasswordAuthException {
                 if (context.mounted) {
-                  await showErrorDialog(context, e.toString());
+                  await showErrorDialog(context, 'Wrong crecentials.');
+                }
+              } on GenericAuthException catch (_) {
+                if (context.mounted) {
+                  await showErrorDialog(context, 'Authentication errror.');
                 }
               }
             },

@@ -1,6 +1,7 @@
 import 'package:theflaggangapp/services/auth/auth_user.dart';
 
 abstract class AuthProvider {
+  Future<void> initialize();
   AuthUser? get currentUser;
   Future<AuthUser> login({
     required String email,
@@ -10,9 +11,6 @@ abstract class AuthProvider {
     required String email,
     required String password,
   });
-  // Future<void> signInWithEmailAndPassword(String email, String password);
-  // Future<void> registerWithEmailAndPassword(String email, String password);
   Future<void> logOut();
   Future<void> sendEmailVerification();
-  // Future<void> reloadUser();
 }

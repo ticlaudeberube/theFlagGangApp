@@ -1,8 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as devtools show log;
 
 import 'package:theflaggangapp/constants/routes.dart';
+import 'package:theflaggangapp/enums/menu_actions.dart';
+import 'package:theflaggangapp/services/auth/auth_service.dart';
 
 class NotesView extends StatefulWidget {
   const NotesView({super.key});
@@ -10,8 +11,6 @@ class NotesView extends StatefulWidget {
   @override
   State<NotesView> createState() => _NotesViewState();
 }
-
-enum MenuActions { logout }
 
 class _NotesViewState extends State<NotesView> {
   @override
@@ -27,7 +26,7 @@ class _NotesViewState extends State<NotesView> {
                 case MenuActions.logout:
                   final shouldLogout = await showLogOutDialog(context);
                   if (shouldLogout) {
-                    await FirebaseAuth.instance.signOut();
+                    await AuthService.firebase().logOut();
                     devtools.log('Should logout: $shouldLogout');
 
                     if (context.mounted) {
