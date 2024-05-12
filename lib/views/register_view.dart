@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'dart:developer' as devtools show log;
 
 import 'package:theflaggangapp/constants/routes.dart';
+import 'package:theflaggangapp/utilities/show_error_dialog.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
@@ -58,28 +58,40 @@ class _RegisterViewState extends State<RegisterView> {
               final email = _email.text;
               final password = _password.text;
               try {
-                final userCredencial =
-                    await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                await FirebaseAuth.instance.createUserWithEmailAndPassword(
                   email: email,
                   password: password,
                 );
-                devtools.log(userCredencial.user.toString());
+                final user = FirebaseAuth.instance.currentUser;
+                await user?.sendEmailVerification();
+                if (context.mounted) {
+                  Navigator.of(context).pushNamed(verifyEmailRoute);
+                }
               } on FirebaseAuthException catch (e) {
-                switch (e.code) {
-                  case 'email-already-in-use':
-                    devtools.log('The account already exists for that email.');
-                    break;
-                  case 'weak-password':
-                    devtools.log('The password provided is too weak.');
-                    break;
-                  case 'invalid-email':
-                    devtools.log('Invalid email entered.');
-                    break;
-                  default:
-                    devtools.log(e.message.toString());
+                if (context.mounted) {
+                  switch (e.code) {
+                    case 'email-already-in-use':
+                      showErrorDialog(context,
+                          'The account already exists for that email.');
+                      break;
+                    case 'weak-password':
+                      showErrorDialog(
+                          context, 'The password provided is too weak.');
+                      break;
+                    case 'invalid-email':
+                      showErrorDialog(context, 'Invalid email entered.');
+                      break;
+                    default:
+                      showErrorDialog(context, 'Error: ${(e).code}');
+                  }
                 }
               } catch (e) {
-                devtools.log(e.toString());
+                if (context.mounted) {
+                  showErrorDialog(
+                    context,
+                    e.toString(),
+                  );
+                }
               }
             },
             child: const Text('Register'),

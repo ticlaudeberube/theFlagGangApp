@@ -61,25 +61,34 @@ class _LoginViewState extends State<LoginView> {
                 await FirebaseAuth.instance.signInWithEmailAndPassword(
                     email: email, password: password);
 
-                if (!context.mounted) return;
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                  notesRoute,
-                  (route) => false,
-                );
+                if (context.mounted) {
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                    notesRoute,
+                    (route) => false,
+                  );
+                }
+                final user = FirebaseAuth.instance.currentUser;
+                await user?.sendEmailVerification();
+                if (context.mounted) {
+                  Navigator.of(context).pushNamed(verifyEmailRoute);
+                }
               } on FirebaseAuthException catch (e) {
-                if (!context.mounted) return;
-                switch (e.code) {
-                  case 'user-not-found':
-                    await showErrorDialog(context, 'No user found.');
-                    break;
-                  case 'wrong-password':
-                    await showErrorDialog(context, 'Wrong crecentials.');
-                    break;
-                  default:
-                    await showErrorDialog(context, 'Error: ${e.code}');
+                if (context.mounted) {
+                  switch (e.code) {
+                    case 'user-not-found':
+                      await showErrorDialog(context, 'No user found.');
+                      break;
+                    case 'wrong-password':
+                      await showErrorDialog(context, 'Wrong crecentials.');
+                      break;
+                    default:
+                      await showErrorDialog(context, 'Error: ${e.code}');
+                  }
                 }
               } catch (e) {
-                await showErrorDialog(context, e.toString());
+                if (context.mounted) {
+                  await showErrorDialog(context, e.toString());
+                }
               }
             },
             child: const Text('Sign in'),

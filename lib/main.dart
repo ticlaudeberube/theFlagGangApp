@@ -13,14 +13,14 @@ void main() {
   runApp(MaterialApp(
     title: 'Flutter Demo',
     theme: ThemeData(
-      colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-      useMaterial3: true,
+      primarySwatch: Colors.blue,
     ),
     home: const HomePage(),
     routes: {
       loginRoute: (context) => const LoginView(),
       registerRoute: (context) => const RegisterView(),
       notesRoute: (context) => const NotesView(),
+      verifyEmailRoute: (context) => const VerifyEmailView(),
     },
   ));
 }
@@ -39,7 +39,7 @@ class HomePage extends StatelessWidget {
               final user = FirebaseAuth.instance.currentUser;
               if (user != null) {
                 // TODO: fix verify email
-                if (!user.emailVerified) {
+                if (user.emailVerified) {
                   return const NotesView();
                 } else {
                   return const VerifyEmailView();
