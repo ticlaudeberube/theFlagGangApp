@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as devtools show log;
 
+import 'package:theflaggangapp/constants/routes.dart';
+
 class NotesView extends StatefulWidget {
   const NotesView({super.key});
 
@@ -30,7 +32,7 @@ class _NotesViewState extends State<NotesView> {
 
                     if (!context.mounted) return;
                     Navigator.of(context)
-                        .pushNamedAndRemoveUntil('/login/', (_) => false);
+                        .pushNamedAndRemoveUntil(loginRoute, (_) => false);
                   }
 
                   break;
